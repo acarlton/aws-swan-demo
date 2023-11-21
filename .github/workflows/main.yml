@@ -7,15 +7,13 @@ on:
       - develop
       - feature/*
 
-env:
-  AWS_REGION: $AWS_REGION
-
 permissions:
   id-token: write    # This is required for requesting the JWT
   contents: read     # This is required for actions/checkout
 
 jobs:
   AssumeRoleAndCallIdentity:
+    environment: production
     runs-on: ubuntu-latest
     steps:
       - name: Clone the Git repository
@@ -25,7 +23,7 @@ jobs:
         with:
           role-to-assume: $AWS_ASSUME_ROLE_ARN
           role-session-name: github-aws-oidc
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: $AWS_REGION
       # TODO: simple API call for now; replace with Terraform plan/apply
       - name: Sts GetCallerIdentity
         run: |
