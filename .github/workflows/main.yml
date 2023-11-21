@@ -23,7 +23,7 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_ASSUME_ROLE_ARN }}
           role-session-name: github-aws-oidc
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: ${{ vars.AWS_REGION }}
       # TODO: simple API call for now; replace with Terraform plan/apply
       - name: Sts GetCallerIdentity
         run: |
