@@ -19,10 +19,9 @@ jobs:
       - name: Clone the Git repository
         uses: actions/checkout@v3
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1.7.0
+        uses: aws-actions/configure-aws-credentials@v4.0.1
         with:
           role-to-assume: ${{ secrets.AWS_ASSUME_ROLE_ARN }}
-          role-session-name: github-aws-oidc
           aws-region: ${{ vars.AWS_REGION }}
       # TODO: simple API call for now; replace with Terraform plan/apply
       - name: Sts GetCallerIdentity
