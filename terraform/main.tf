@@ -13,13 +13,18 @@ terraform {
 
 provider "aws" {
   default_tags {
-    tags = {
-      Application = "aws-swan-demo"
-      Environment = var.environment
-    }
+    tags = local.default_tags
   }
 
   region = var.aws_region
 }
 
-resource "aws_s3_bucket" "test" {}
+provider "aws" {
+  alias = "replicated"
+
+  default_tags {
+    tags = local.default_tags
+  }
+
+  region = var.aws_replication_region
+}
