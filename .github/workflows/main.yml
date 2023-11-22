@@ -35,5 +35,5 @@ jobs:
             -backend-config="region=${{ env.AWS_REGION }}"
         working-directory: ./terraform
       - name: Terraform Plan
-        run: terraform plan -var-file=.terraform/${{ jobs.deploy.environment }}.tfstate
+        run: terraform plan -var-file=.terraform/production.tfstate
         working-directory: ./terraform
