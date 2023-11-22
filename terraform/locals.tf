@@ -1,7 +1,10 @@
 locals {
+  alb_ips = [ for v in aws_lb.alb.subnet_mapping: v.private_ipv4_address ]
   default_tags = {
     Application = "aws-swan-demo"
     Environment = var.environment
   }
   namespace = "aws-swan-demo-${var.environment}"
+  private_subnet_ids = [aws_subnet.private_1.id, aws_subnet.private_2.id ]
+  public_subnet_ids = [aws_subnet.public_1.id, aws_subnet.public_2.id ]
 }
