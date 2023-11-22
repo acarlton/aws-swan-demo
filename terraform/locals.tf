@@ -3,5 +3,5 @@ locals {
     Application = "aws-swan-demo"
     Environment = var.environment
   }
-  namespace = "aws-swan-demo-${var.environment}"
+  namespace       = "aws-swan-demo-${var.environment}"
 }
