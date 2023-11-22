@@ -1,4 +1,4 @@
-name: Connect to AWS role
+name: Deploy Infrastructure
 
 on:
   push:
@@ -12,7 +12,7 @@ permissions:
   contents: read     # This is required for actions/checkout
 
 jobs:
-  deploy:
+  Deploy:
     environment: production
     runs-on: ubuntu-latest
     steps:
@@ -34,6 +34,6 @@ jobs:
             -backend-config="key=${{ github.ref_name }}" \
             -backend-config="region=${{ env.AWS_REGION }}"
         working-directory: ./terraform
-      - name: Terraform Plan
-        run: terraform plan -var-file=.terraform/production.tfvars
+      - name: Terraform Apply
+        run: terraform apply -auto-approve -var-file=.terraform/production.tfvars
         working-directory: ./terraform
