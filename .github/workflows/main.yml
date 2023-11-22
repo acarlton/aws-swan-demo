@@ -1,9 +1,8 @@
-name: Deploy Infrastructure
+name: Deploy Infrastructure (DEV)
 
 on:
   push:
     branches:
-      - main
       - develop
       - feature/*
 
@@ -13,7 +12,8 @@ permissions:
 
 jobs:
   Deploy:
-    environment: production
+    # TODO: support multi-environment deployments, perhaps make this a reusable job?
+    environment: development
     runs-on: ubuntu-latest
     steps:
       - name: Clone the Git repository
@@ -31,9 +31,9 @@ jobs:
         run: |
           terraform init \
             -backend-config="bucket=${{ secrets.AWS_S3_TERRAFORM_STATE_BUCKET_NAME }}" \
-            -backend-config="key=${{ github.ref_name }}" \
+            -backend-config="key=development.tfstate" \
             -backend-config="region=${{ env.AWS_REGION }}"
         working-directory: ./terraform
       - name: Terraform Apply
-        run: terraform apply -auto-approve -var-file=.terraform/production.tfvars
+        run: terraform apply -auto-approve -var-file=.terraform/development.tfvars
         working-directory: ./terraform
