@@ -10,10 +10,10 @@ resource "aws_vpc" "vpc" {
 
 # Public subnets
 resource "aws_subnet" "public_1" {
-  availability_zone = "${var.aws_region}a"
-  cidr_block = "10.${var.vpc_cidr_index}.1.0/24"
+  availability_zone       = "${var.aws_region}a"
+  cidr_block              = "10.${var.vpc_cidr_index}.1.0/24"
   map_public_ip_on_launch = true
-  vpc_id = aws_vpc.vpc.id
+  vpc_id                  = aws_vpc.vpc.id
 
   tags = {
     Name = "Public Subnet 1"
@@ -21,10 +21,10 @@ resource "aws_subnet" "public_1" {
 }
 
 resource "aws_subnet" "public_2" {
-  availability_zone = "${var.aws_region}b"
-  cidr_block = "10.${var.vpc_cidr_index}.2.0/24"
+  availability_zone       = "${var.aws_region}b"
+  cidr_block              = "10.${var.vpc_cidr_index}.2.0/24"
   map_public_ip_on_launch = true
-  vpc_id = aws_vpc.vpc.id
+  vpc_id                  = aws_vpc.vpc.id
 
   tags = {
     Name = "Public Subnet 2"
@@ -34,8 +34,8 @@ resource "aws_subnet" "public_2" {
 # Private subnets
 resource "aws_subnet" "private_1" {
   availability_zone = "${var.aws_region}a"
-  cidr_block = "10.${var.vpc_cidr_index}.3.0/24"
-  vpc_id = aws_vpc.vpc.id
+  cidr_block        = "10.${var.vpc_cidr_index}.3.0/24"
+  vpc_id            = aws_vpc.vpc.id
 
   tags = {
     Name = "Private Subnet 1"
@@ -44,8 +44,8 @@ resource "aws_subnet" "private_1" {
 
 resource "aws_subnet" "private_2" {
   availability_zone = "${var.aws_region}b"
-  cidr_block = "10.${var.vpc_cidr_index}.4.0/24"
-  vpc_id = aws_vpc.vpc.id
+  cidr_block        = "10.${var.vpc_cidr_index}.4.0/24"
+  vpc_id            = aws_vpc.vpc.id
 
   tags = {
     Name = "Private Subnet 2"
@@ -77,12 +77,12 @@ resource "aws_route_table" "public" {
 
 # Assign the public subnets to the public route table
 resource "aws_route_table_association" "public_subnet_1" {
-  subnet_id = aws_subnet.public_1.id
+  subnet_id      = aws_subnet.public_1.id
   route_table_id = aws_route_table.public.id
 }
 
 resource "aws_route_table_association" "public_subnet_2" {
-  subnet_id = aws_subnet.public_2.id
+  subnet_id      = aws_subnet.public_2.id
   route_table_id = aws_route_table.public.id
 }
 
@@ -93,7 +93,7 @@ resource "aws_eip" "eip" {
 
 resource "aws_nat_gateway" "gateway" {
   allocation_id = aws_eip.eip.id
-  subnet_id = aws_subnet.public_1.id
+  subnet_id     = aws_subnet.public_1.id
 
   tags = {
     Name = local.namespace
@@ -105,7 +105,7 @@ resource "aws_route_table" "private" {
   vpc_id = aws_vpc.vpc.id
 
   route {
-    cidr_block = "0.0.0.0/0"
+    cidr_block     = "0.0.0.0/0"
     nat_gateway_id = aws_nat_gateway.gateway.id
   }
 
@@ -116,11 +116,11 @@ resource "aws_route_table" "private" {
 
 # Assign the private subnets to the private route table
 resource "aws_route_table_association" "private_subnet_1" {
-  subnet_id = aws_subnet.private_1.id
+  subnet_id      = aws_subnet.private_1.id
   route_table_id = aws_route_table.private.id
 }
 
 resource "aws_route_table_association" "private_subnet_2" {
-  subnet_id = aws_subnet.private_2.id
+  subnet_id      = aws_subnet.private_2.id
   route_table_id = aws_route_table.private.id
 }

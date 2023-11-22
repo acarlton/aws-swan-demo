@@ -5,7 +5,7 @@ resource "aws_kms_key" "primary" {
 }
 
 resource "aws_kms_alias" "primary" {
-  name = "alias/${local.namespace}"
+  name          = "alias/${local.namespace}"
   target_key_id = aws_kms_key.primary.key_id
 }
 
@@ -22,6 +22,6 @@ resource "aws_kms_replica_key" "replicated" {
 resource "aws_kms_alias" "replicated" {
   provider = aws.replicated
 
-  name = "alias/${local.namespace}"
+  name          = "alias/${local.namespace}"
   target_key_id = aws_kms_replica_key.replicated.key_id
 }
