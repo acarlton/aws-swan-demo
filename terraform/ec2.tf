@@ -1,23 +1,31 @@
+# Security group for the ALB accepting HTTP connections on port 80
+#
+# TODO: implement SSL encrypted traffic and redirect HTTP to HTTPS
 resource "aws_security_group" "web" {
   name = "${local.namespace}-web"
-
-  ingress {
-    from_port = 80
-    to_port = 80
-    protocol = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-
-  egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-
   vpc_id = aws_vpc.vpc.id
+}
+
+resource "aws_security_group_rule" "web_ingress_http" {
+  cidr_blocks      = ["0.0.0.0/0"]
+  description = "Allow public HTTP traffic"
+  from_port = 80
+  ipv6_cidr_blocks = ["::/0"]
+  protocol = "tcp"
+  security_group_id = aws_security_group.web.id
+  to_port = 80
+  type = "ingress"
+}
+
+resource "aws_security_group_rule" "web_egress_all" {
+  cidr_blocks      = ["0.0.0.0/0"]
+  description = "Allow all outbound traffic"
+  from_port = 0
+  ipv6_cidr_blocks = ["::/0"]
+  protocol = -1
+  security_group_id = aws_security_group.web.id
+  to_port = 0
+  type = "egress"
 }
 
 resource "aws_lb_target_group" "alb" {
@@ -27,7 +35,7 @@ resource "aws_lb_target_group" "alb" {
   target_type = "ip"
 
   health_check {
-    # TODO: enable health check; off for testing
+    # TODO: review health check
     enabled = true
     path = "/"
     port = 80

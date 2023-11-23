@@ -76,18 +76,24 @@ resource "aws_ecs_task_definition" "hello_world" {
   requires_compatibilities = ["FARGATE"]
 }
 
+# Security group for the hello-world ECS service accepts HTTP
+#  connections from the ALB security group
 resource "aws_security_group" "app" {
+  name = "${local.namespace}-app"
   vpc_id = aws_vpc.vpc.id
-
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    description = "Allow HTTP from ALB"
-    security_groups = [aws_security_group.web.id]
-  }
 }
 
+resource "aws_security_group_rule" "app_ingress_http" {
+  description = "Allow HTTP from ALB"
+  from_port = 80
+  protocol = "tcp"
+  security_group_id = aws_security_group.app.id
+  source_security_group_id = aws_security_group.web.id
+  to_port = 80
+  type = "ingress"
+}
+
+# Hello World ECS service
 resource "aws_ecs_service" "hello_world" {
   name = "${local.namespace}-hello-world"
 
@@ -95,6 +101,8 @@ resource "aws_ecs_service" "hello_world" {
   desired_count = 1
   launch_type = "FARGATE"
 
+  # TODO: consider service encrypted internal traffic between
+  #  ALB and ECS container on 443 - requires self-signed cert
   load_balancer {
     target_group_arn = aws_lb_target_group.alb.arn
     container_name = "hello-world"
