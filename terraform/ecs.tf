@@ -83,7 +83,7 @@ resource "aws_security_group" "app" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    description = "Allow connection from ALB"
+    description = "Allow HTTP from ALB"
     security_groups = [aws_security_group.web.id]
   }
 }
@@ -102,7 +102,7 @@ resource "aws_ecs_service" "hello_world" {
   }
 
   network_configuration {
-    security_groups = [aws_security_group.web.id]
+    security_groups = [aws_security_group.app.id]
     subnets = local.private_subnet_ids
   }
 
