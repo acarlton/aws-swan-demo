@@ -2,43 +2,43 @@
 #
 # TODO: implement SSL encrypted traffic and redirect HTTP to HTTPS
 resource "aws_security_group" "web" {
-  name = "${local.namespace}-web"
+  name   = "${local.namespace}-web"
   vpc_id = aws_vpc.vpc.id
 }
 
 resource "aws_security_group_rule" "web_ingress_http" {
-  cidr_blocks      = ["0.0.0.0/0"]
-  description = "Allow public HTTP traffic"
-  from_port = 80
-  ipv6_cidr_blocks = ["::/0"]
-  protocol = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  description       = "Allow public HTTP traffic"
+  from_port         = 80
+  ipv6_cidr_blocks  = ["::/0"]
+  protocol          = "tcp"
   security_group_id = aws_security_group.web.id
-  to_port = 80
-  type = "ingress"
+  to_port           = 80
+  type              = "ingress"
 }
 
 resource "aws_security_group_rule" "web_egress_all" {
-  cidr_blocks      = ["0.0.0.0/0"]
-  description = "Allow all outbound traffic"
-  from_port = 0
-  ipv6_cidr_blocks = ["::/0"]
-  protocol = -1
+  cidr_blocks       = ["0.0.0.0/0"]
+  description       = "Allow all outbound traffic"
+  from_port         = 0
+  ipv6_cidr_blocks  = ["::/0"]
+  protocol          = -1
   security_group_id = aws_security_group.web.id
-  to_port = 0
-  type = "egress"
+  to_port           = 0
+  type              = "egress"
 }
 
 resource "aws_lb_target_group" "alb" {
-  name = "${local.namespace}"
-  port = 80
-  protocol = "HTTP"
+  name        = local.namespace
+  port        = 80
+  protocol    = "HTTP"
   target_type = "ip"
 
   health_check {
     # TODO: review health check
-    enabled = true
-    path = "/"
-    port = 80
+    enabled  = true
+    path     = "/"
+    port     = 80
     protocol = "HTTP"
   }
 
@@ -46,11 +46,11 @@ resource "aws_lb_target_group" "alb" {
 }
 
 resource "aws_lb" "alb" {
-  name = local.namespace
-  internal = false
+  name               = local.namespace
+  internal           = false
   load_balancer_type = "application"
-  security_groups = [aws_security_group.web.id]
-  subnets = local.public_subnet_ids
+  security_groups    = [aws_security_group.web.id]
+  subnets            = local.public_subnet_ids
 }
 
 resource "aws_lb_listener" "alb" {

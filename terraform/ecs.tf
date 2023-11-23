@@ -2,7 +2,7 @@ resource "aws_cloudwatch_log_group" "hello_world" {
   # TODO: add KMS policy to key and associate for encryption:
   #  https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/encrypt-log-data-kms.html
   # kms_key_id = aws_kms_key.primary.arn
-  name = "/ecs/${local.namespace}/hello-world"
+  name              = "/ecs/${local.namespace}/hello-world"
   retention_in_days = 30
 }
 
@@ -14,16 +14,16 @@ resource "aws_ecs_cluster" "cluster" {
 data "aws_iam_policy_document" "ecs_task_assume_role" {
   statement {
     actions = ["sts:AssumeRole"]
-    effect = "Allow"
+    effect  = "Allow"
     principals {
       identifiers = ["ecs-tasks.amazonaws.com"]
-      type = "Service"
+      type        = "Service"
     }
   }
 }
 
 resource "aws_iam_role" "ecs_task_execution" {
-  name = "${local.namespace}_ecs_task_execution"
+  name               = "${local.namespace}_ecs_task_execution"
   assume_role_policy = data.aws_iam_policy_document.ecs_task_assume_role.json
 }
 
@@ -46,72 +46,72 @@ resource "aws_ecs_task_definition" "hello_world" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          "awslogs-group": aws_cloudwatch_log_group.hello_world.name
-          "awslogs-region": var.aws_region
-          "awslogs-stream-prefix": local.namespace
+          "awslogs-group" : aws_cloudwatch_log_group.hello_world.name
+          "awslogs-region" : var.aws_region
+          "awslogs-stream-prefix" : local.namespace
         }
       },
       # TODO: parameterize memory, or remove this value because it is not required
       #  for Fargate containers when assigned at the task level and we only have one task
-      memory = 512
-      name = "hello-world"
+      memory      = 512
+      name        = "hello-world"
       networkMode = "FARGATE"
       portMappings = [
         {
-          hostPort = 80,
+          hostPort      = 80,
           containerPort = 80,
-          protocol = "tcp"
+          protocol      = "tcp"
         }
       ]
     }
   ])
 
   # TODO: parameterize cpu
-  cpu = 256
+  cpu                = 256
   execution_role_arn = aws_iam_role.ecs_task_execution.arn
-  family = "${local.namespace}-hello-world"
+  family             = "${local.namespace}-hello-world"
   # TODO: parameterize memory
-  memory = 512
-  network_mode = "awsvpc"
+  memory                   = 512
+  network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
 }
 
 # Security group for the hello-world ECS service accepts HTTP
 #  connections from the ALB security group
 resource "aws_security_group" "app" {
-  name = "${local.namespace}-app"
+  name   = "${local.namespace}-app"
   vpc_id = aws_vpc.vpc.id
 }
 
 resource "aws_security_group_rule" "app_ingress_http" {
-  description = "Allow HTTP from ALB"
-  from_port = 80
-  protocol = "tcp"
-  security_group_id = aws_security_group.app.id
+  description              = "Allow HTTP from ALB"
+  from_port                = 80
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.app.id
   source_security_group_id = aws_security_group.web.id
-  to_port = 80
-  type = "ingress"
+  to_port                  = 80
+  type                     = "ingress"
 }
 
 # Hello World ECS service
 resource "aws_ecs_service" "hello_world" {
   name = "${local.namespace}-hello-world"
 
-  cluster = aws_ecs_cluster.cluster.id
+  cluster       = aws_ecs_cluster.cluster.id
   desired_count = 1
-  launch_type = "FARGATE"
+  launch_type   = "FARGATE"
 
   # TODO: consider service encrypted internal traffic between
   #  ALB and ECS container on 443 - requires self-signed cert
   load_balancer {
     target_group_arn = aws_lb_target_group.alb.arn
-    container_name = "hello-world"
-    container_port = 80
+    container_name   = "hello-world"
+    container_port   = 80
   }
 
   network_configuration {
     security_groups = [aws_security_group.app.id]
-    subnets = local.private_subnet_ids
+    subnets         = local.private_subnet_ids
   }
 
   task_definition = aws_ecs_task_definition.hello_world.arn
