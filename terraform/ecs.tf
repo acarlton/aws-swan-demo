@@ -10,7 +10,7 @@ resource "aws_ecs_cluster" "cluster" {
   name = local.namespace
 }
 
-# Task execution role
+# Task execution assumed role
 data "aws_iam_policy_document" "ecs_task_assume_role" {
   statement {
     actions = ["sts:AssumeRole"]
@@ -27,16 +27,21 @@ resource "aws_iam_role" "ecs_task_execution" {
   assume_role_policy = data.aws_iam_policy_document.ecs_task_assume_role.json
 }
 
+# Use the AWS-provided managed role for basic logging and ECR repository permissions
 resource "aws_iam_role_policy_attachment" "legacy_listener_aws_task_execution_role_policy" {
   role       = aws_iam_role.ecs_task_execution.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-# Task definition
+# Task definition featuring
+#  * CloudWatch logs integration
 resource "aws_ecs_task_definition" "hello_world" {
   container_definitions = jsonencode([
     {
+      # TODO: parameterize cpu, or remove this value because it is not required
+      #  for Fargate containers when assigned at the task level and we only have one task
       cpu = 256
+      # TODO: specify image tag and eventually parameterize
       image = "nginx"
       logConfiguration = {
         logDriver = "awslogs"
@@ -46,6 +51,8 @@ resource "aws_ecs_task_definition" "hello_world" {
           "awslogs-stream-prefix": local.namespace
         }
       },
+      # TODO: parameterize memory, or remove this value because it is not required
+      #  for Fargate containers when assigned at the task level and we only have one task
       memory = 512
       name = "hello-world"
       networkMode = "FARGATE"
@@ -59,9 +66,11 @@ resource "aws_ecs_task_definition" "hello_world" {
     }
   ])
 
+  # TODO: parameterize cpu
   cpu = 256
   execution_role_arn = aws_iam_role.ecs_task_execution.arn
   family = "${local.namespace}-hello-world"
+  # TODO: parameterize memory
   memory = 512
   network_mode = "awsvpc"
   requires_compatibilities = ["FARGATE"]
