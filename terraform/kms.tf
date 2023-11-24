@@ -33,7 +33,7 @@ data "aws_iam_policy_document" "kms_primary_default" {
     condition {
       test = "ArnEquals"
       # Interpolate this (for now) due to dependency cycle when referencing
-      values   = ["arn:aws:logs:${var.aws_region}:${local.account_id}:log-group:/ecs/aws-swan-demo-local/hello-world"]
+      values   = ["arn:aws:logs:${var.aws_region}:${local.account_id}:log-group:/ecs/${local.namespace}/hello-world"]
       variable = "kms:EncryptionContext:aws:logs:arn"
     }
   }
