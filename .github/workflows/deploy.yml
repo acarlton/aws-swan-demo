@@ -42,7 +42,7 @@ jobs:
         run: |
           terraform init \
             -backend-config="bucket=${{ secrets.aws_s3_terraform_state_bucket_name }}" \
-            -backend-config="key=${{ inputs.jobs.deploy.environment }}" \
+            -backend-config="key=${{ inputs.aws_s3_terraform_state_object_key }}" \
             -backend-config="region=${{ inputs.aws_region }}"
         working-directory: ./terraform
       - name: Terraform Apply
