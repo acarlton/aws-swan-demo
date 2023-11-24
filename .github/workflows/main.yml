@@ -32,12 +32,12 @@ jobs:
           terraform init \
             -backend-config="bucket=${{ secrets.AWS_S3_TERRAFORM_STATE_BUCKET_NAME }}" \
             -backend-config="key=development.tfstate" \
-            -backend-config="region=${{ env.AWS_REGION }}"
+            -backend-config="region=${{ vars.AWS_REGION }}"
         working-directory: ./terraform
       - name: Terraform Apply
         run: |
           terraform apply -auto-approve \
-            -var="aws_region=${{ env.AWS_REGION }}" \
-            -var="aws_replication_region=${{ env.AWS_REPLICATION_REGION }}" \
-            -var="environment=${{ env.ENVIRONMENT_NAME }}"
+            -var="aws_region=${{ vars.AWS_REGION }}" \
+            -var="aws_replication_region=${{ vars.AWS_REPLICATION_REGION }}" \
+            -var="environment=${{ vars.ENVIRONMENT_NAME }}"
         working-directory: ./terraform
