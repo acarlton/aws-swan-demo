@@ -12,8 +12,6 @@ permissions:
 
 jobs:
   deploy:
-    environment: development
-    name: Deploy to development
     uses: ./.github/workflows/deploy.yml
     with:
       aws_region: ${{ vars.AWS_REGION }}
