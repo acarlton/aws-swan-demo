@@ -12,34 +12,11 @@ permissions:
 
 jobs:
   deploy:
-    # TODO: support multi-environment deployments, perhaps make this a reusable job?
     environment: development
-    name: Deploy
-    runs-on: ubuntu-latest
-    steps:
-      - name: Clone the Git repository
-        uses: actions/checkout@v3
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4.0.1
-        with:
-          role-to-assume: ${{ secrets.AWS_ASSUME_ROLE_ARN }}
-          aws-region: ${{ vars.AWS_REGION }}
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-      - name: Terraform Format
-        run: terraform fmt -check
-        working-directory: ./terraform
-      - name: Terraform Init
-        run: |
-          terraform init \
-            -backend-config="bucket=${{ secrets.AWS_S3_TERRAFORM_STATE_BUCKET_NAME }}" \
-            -backend-config="${{ jobs.deploy.environment }}.tfstate" \
-            -backend-config="region=${{ vars.AWS_REGION }}"
-        working-directory: ./terraform
-      - name: Terraform Apply
-        run: |
-          terraform apply -auto-approve \
-            -var="aws_region=${{ vars.AWS_REGION }}" \
-            -var="aws_replication_region=${{ vars.AWS_REPLICATION_REGION }}" \
-            -var="environment=${{ vars.ENVIRONMENT_NAME }}"
-        working-directory: ./terraform
+    uses: ./.github/workflows/deploy.yml
+    with:
+      aws_region: ${{ vars.AWS_REGION }}
+      aws_replication_region: ${{ vars.AWS_REPLICATION_REGION }}
+      environment_name: ${{ vars.ENVIRONMENT_NAME }}
+    secrets:
+      aws_s3_terraform_state_bucket_name: ${{ secrets.AWS_S3_TERRAFORM_STATE_BUCKET_NAME }}
