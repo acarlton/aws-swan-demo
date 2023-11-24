@@ -1,0 +1,25 @@
+name: Deploy development
+
+on:
+  push:
+    branches:
+      - develop
+      - feature/*
+
+permissions:
+  id-token: write    # This is required for requesting the JWT
+  contents: read     # This is required for actions/checkout
+
+jobs:
+  deploy:
+    name: Deploy to development
+    needs: variables
+    uses: ./.github/workflows/deploy.yml
+    with:
+      aws_region: us-east-1
+      aws_replication_region: us-west-2
+      aws_s3_terraform_state_object_key: development.tfstate
+      environment_name: dev
+    secrets:
+      aws_assume_role_arn: ${{ secrets.AWS_ASSUME_ROLE_ARN }}
+      aws_s3_terraform_state_bucket_name: ${{ secrets.AWS_S3_TERRAFORM_STATE_BUCKET_NAME }}
