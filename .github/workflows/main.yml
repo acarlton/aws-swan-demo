@@ -22,6 +22,8 @@ jobs:
       aws_s3_terraform_state_object_key: ${{ vars.AWS_S3_TERRAFORM_STATE_OBJECT_KEY }}
       environment_name: ${{ vars.ENVIRONMENT_NAME }}
     runs-on: ubuntu-latest
+    steps:
+      - run: echo "Exposing environment variables: https://github.com/orgs/community/discussions/26671#discussioncomment-4295807"
   deploy:
     needs: variables
     uses: ./.github/workflows/deploy.yml
