@@ -22,7 +22,6 @@ on:
 jobs:
   deploy:
     name: Deploy to ${{ jobs.deploy.environment }}
-    runs-on: ubuntu-latest
     steps:
       - name: Clone the Git repository
         uses: actions/checkout@v3
