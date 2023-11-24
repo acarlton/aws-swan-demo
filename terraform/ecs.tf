@@ -1,7 +1,6 @@
+# Encrypt log data with KMS CMK: https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/encrypt-log-data-kms.html
 resource "aws_cloudwatch_log_group" "hello_world" {
-  # TODO: add KMS policy to key and associate for encryption:
-  #  https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/encrypt-log-data-kms.html
-  # kms_key_id = aws_kms_key.primary.arn
+  kms_key_id        = aws_kms_key.primary.arn
   name              = "/ecs/${local.namespace}/hello-world"
   retention_in_days = 30
 }

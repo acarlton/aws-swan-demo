@@ -1,5 +1,6 @@
 locals {
-  alb_ips = [for v in aws_lb.alb.subnet_mapping : v.private_ipv4_address]
+  account_id = data.aws_caller_identity.current.account_id
+  alb_ips    = [for v in aws_lb.alb.subnet_mapping : v.private_ipv4_address]
   default_tags = {
     Application = "aws-swan-demo"
     Environment = var.environment
