@@ -11,7 +11,7 @@ data "aws_iam_policy_document" "kms_primary_default" {
       type        = "AWS"
     }
     resources = ["*"]
-    sid = "Enable IAM User Permissions"
+    sid       = "Enable IAM User Permissions"
   }
 
   # Grant access to encrypt the hello-world CloudWatch log group
@@ -27,13 +27,13 @@ data "aws_iam_policy_document" "kms_primary_default" {
     effect = "Allow"
     principals {
       identifiers = ["logs.${var.aws_region}.amazonaws.com"]
-      type = "Service"
+      type        = "Service"
     }
     resources = ["*"]
     condition {
       test = "ArnEquals"
       # Interpolate this (for now) due to dependency cycle when referencing
-      values = ["arn:aws:logs:${var.aws_region}:${local.account_id}:log-group:/ecs/aws-swan-demo-local/hello-world"]
+      values   = ["arn:aws:logs:${var.aws_region}:${local.account_id}:log-group:/ecs/aws-swan-demo-local/hello-world"]
       variable = "kms:EncryptionContext:aws:logs:arn"
     }
   }
