@@ -16,6 +16,7 @@ jobs:
   #    https://github.com/orgs/community/discussions/26671#discussioncomment-4295807
   variables:
     environment: development
+    name: Set variables
     outputs:
       aws_region: ${{ vars.AWS_REGION }}
       aws_replication_region: ${{ vars.AWS_REPLICATION_REGION }}
@@ -25,6 +26,7 @@ jobs:
     steps:
       - run: 'echo "Exposing environment variables: https://github.com/orgs/community/discussions/26671#discussioncomment-4295807"'
   deploy:
+    name: Deploy to development
     needs: variables
     uses: ./.github/workflows/deploy.yml
     with:

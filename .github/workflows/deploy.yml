@@ -26,6 +26,7 @@ on:
 
 jobs:
   deploy:
+    name: Deploy
     runs-on: ubuntu-latest
     steps:
       - name: Clone the Git repository
@@ -34,7 +35,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4.0.1
         with:
           role-to-assume: ${{ secrets.aws_assume_role_arn }}
-          aws-region: ${{ inputs.AWS_REGION }}
+          aws-region: ${{ inputs.aws_region }}
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
       - name: Terraform Format
