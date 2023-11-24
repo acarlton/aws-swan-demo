@@ -21,7 +21,6 @@ on:
       aws_s3_terraform_state_bucket_name:
         description: The AWS S3 bucket name containing Terraform backends, configured in Github repository settings
         required: true
-        type: string
 
 jobs:
   deploy:
