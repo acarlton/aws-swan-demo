@@ -25,6 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: 'echo "Exposing environment variables: https://github.com/orgs/community/discussions/26671#discussioncomment-4295807"'
+
   deploy:
     name: Deploy to development
     needs: variables
