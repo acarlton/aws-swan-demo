@@ -12,10 +12,13 @@ permissions:
 
 jobs:
   deploy:
+    environment: development
+    name: Deploy to development
     uses: ./.github/workflows/deploy.yml
     with:
       aws_region: ${{ vars.AWS_REGION }}
       aws_replication_region: ${{ vars.AWS_REPLICATION_REGION }}
+      aws_s3_terraform_state_object_key: ${{ vars.AWS_S3_TERRAFORM_STATE_OBJECT_KEY }}
       environment_name: ${{ vars.ENVIRONMENT_NAME }}
     secrets:
       aws_s3_terraform_state_bucket_name: ${{ secrets.AWS_S3_TERRAFORM_STATE_BUCKET_NAME }}

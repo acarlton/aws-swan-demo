@@ -9,6 +9,10 @@ on:
         description: The AWS replication region target for deployment
         required: true
         type: string
+      aws_s3_terraform_state_object_key:
+        description: The key of the Terraform .tfstate file in AWS S3
+        required: true
+        type: string
       environment_name:
         description: The name of the environment configured in Github repository settings
         required: true
@@ -38,7 +42,7 @@ jobs:
         run: |
           terraform init \
             -backend-config="bucket=${{ secrets.aws_s3_terraform_state_bucket_name }}" \
-            -backend-config="key=${{ jobs.deploy.environment }}.tfstate" \
+            -backend-config="key=${{ inputs.jobs.deploy.environment }}" \
             -backend-config="region=${{ inputs.aws_region }}"
         working-directory: ./terraform
       - name: Terraform Apply
