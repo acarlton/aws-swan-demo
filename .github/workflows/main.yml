@@ -35,5 +35,9 @@ jobs:
             -backend-config="region=${{ env.AWS_REGION }}"
         working-directory: ./terraform
       - name: Terraform Apply
-        run: terraform apply -auto-approve -var-file=.terraform/development.tfvars
+        run: |
+          terraform apply -auto-approve \
+            -var="aws_region=${{ env.AWS_REGION }}" \
+            -var="aws_replication_region=${{ env.AWS_REPLICATION_REGION }}" \
+            -var="environment=${{ env.ENVIRONMENT_NAME }}"
         working-directory: ./terraform
