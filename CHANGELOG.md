@@ -1,5 +1,7 @@
 # Unreleased
 
+* ECS autoscaling configuration
+
 # 0.1.0
 
 * CloudWatch log group encryption using KMS CMK
