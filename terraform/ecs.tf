@@ -134,11 +134,11 @@ resource "aws_ecs_service" "hello_world" {
 
 # Autoscaling
 resource "aws_appautoscaling_target" "hello_world" {
-  max_capacity = 5
-  min_capacity = 1
-  resource_id = "service/${aws_ecs_cluster.cluster.name}/${aws_ecs_service.hello_world.name}"
+  max_capacity       = 5
+  min_capacity       = 1
+  resource_id        = "service/${aws_ecs_cluster.cluster.name}/${aws_ecs_service.hello_world.name}"
   scalable_dimension = "ecs:service:DesiredCount"
-  service_namespace = "ecs"
+  service_namespace  = "ecs"
 }
 
 resource "aws_appautoscaling_policy" "hello_world_memory" {
@@ -159,11 +159,11 @@ resource "aws_appautoscaling_policy" "hello_world_memory" {
 }
 
 resource "aws_appautoscaling_policy" "hello_world_cpu" {
-  name = "${local.namespace}-hello-world-cpu"
-  policy_type = "TargetTrackingScaling"
-  resource_id = aws_appautoscaling_target.hello_world.resource_id
+  name               = "${local.namespace}-hello-world-cpu"
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.hello_world.resource_id
   scalable_dimension = aws_appautoscaling_target.hello_world.scalable_dimension
-  service_namespace = aws_appautoscaling_target.hello_world.service_namespace
+  service_namespace  = aws_appautoscaling_target.hello_world.service_namespace
 
   target_tracking_scaling_policy_configuration {
     predefined_metric_specification {
