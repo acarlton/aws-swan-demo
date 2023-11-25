@@ -62,9 +62,9 @@ resource "aws_ecs_task_definition" "hello_world" {
     }
   ])
 
-  cpu                = var.cpu
-  execution_role_arn = aws_iam_role.ecs_task_execution.arn
-  family             = "${local.namespace}-hello-world"
+  cpu                      = var.cpu
+  execution_role_arn       = aws_iam_role.ecs_task_execution.arn
+  family                   = "${local.namespace}-hello-world"
   memory                   = var.memory
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]

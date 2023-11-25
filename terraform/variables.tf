@@ -11,13 +11,13 @@ variable "aws_replication_region" {
 }
 
 variable "cpu" {
-  default = 256
+  default     = 256
   description = "The CPU resources allocated to the ECS service."
   type        = number
 }
 
 variable "memory" {
-  default = 512
+  default     = 512
   description = "The memory resources allocated to the ECS service."
   type        = number
 }
