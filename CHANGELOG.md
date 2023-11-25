@@ -1,5 +1,8 @@
 # Unreleased
 
+* Update README
+* Add ALB DNS name as a Terraform output
+* Parameterize ECS CPU and memory
 * ECS autoscaling configuration
 
 # 0.1.0
