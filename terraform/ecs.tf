@@ -32,14 +32,12 @@ resource "aws_iam_role_policy_attachment" "legacy_listener_aws_task_execution_ro
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-# Task definition featuring
-#  * CloudWatch logs integration
+# Task definition for Hello World server featuring CloudWatch logs integration
 resource "aws_ecs_task_definition" "hello_world" {
   container_definitions = jsonencode([
     {
-      # TODO: parameterize cpu, or remove this value because it is not required
-      #  for Fargate containers when assigned at the task level and we only have one task
-      cpu = 256
+      # The same value is used for task and service because there is only one task.
+      cpu = var.cpu
       # TODO: parameterize image and/or adjust for a customized container image
       image = "nginxdemos/hello:0.3"
       logConfiguration = {
@@ -50,9 +48,8 @@ resource "aws_ecs_task_definition" "hello_world" {
           "awslogs-stream-prefix" : local.namespace
         }
       },
-      # TODO: parameterize memory, or remove this value because it is not required
-      #  for Fargate containers when assigned at the task level and we only have one task
-      memory      = 512
+      # The same value is used for task and service because there is only one task.
+      memory      = var.memory
       name        = "hello-world"
       networkMode = "FARGATE"
       portMappings = [
@@ -65,12 +62,10 @@ resource "aws_ecs_task_definition" "hello_world" {
     }
   ])
 
-  # TODO: parameterize cpu
-  cpu                = 256
+  cpu                = var.cpu
   execution_role_arn = aws_iam_role.ecs_task_execution.arn
   family             = "${local.namespace}-hello-world"
-  # TODO: parameterize memory
-  memory                   = 512
+  memory                   = var.memory
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
 }
