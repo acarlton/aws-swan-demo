@@ -31,16 +31,20 @@ jobs:
     steps:
       - name: Clone the Git repository
         uses: actions/checkout@v3
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4.0.1
         with:
           role-to-assume: ${{ secrets.aws_assume_role_arn }}
           aws-region: ${{ inputs.aws_region }}
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
+
       - name: Terraform Format
         run: terraform fmt -check
         working-directory: ./terraform
+
       - name: Terraform Init
         run: |
           terraform init \
@@ -48,6 +52,7 @@ jobs:
             -backend-config="key=${{ inputs.aws_s3_terraform_state_object_key }}" \
             -backend-config="region=${{ inputs.aws_region }}"
         working-directory: ./terraform
+
       - name: Terraform Apply
         run: |
           terraform apply -auto-approve \
