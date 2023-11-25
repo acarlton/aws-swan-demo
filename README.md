@@ -28,3 +28,13 @@ Generally, pull requests that contain a more-or-less complete feature implementa
 [CHANGELOG.md](CHANGELOG.md) keeps a record of the features in each release and new work should be documented in the "Unreleased" section until the next release.
 
 Whenever we get around to customizing the Docker image into a more complicated application, we will be using the [3musketeers](https://github.com/flemay/3musketeers) pattern to standardize an interface for common development tasks and processes.
+
+## Alternatives
+
+### AWS Copilot
+
+It is worth noting that the majority of this infrastructure could be quickly and easily configured and deployed using [AWS Copilot](https://aws.github.io/copilot-cli).
+
+### Contributed Terraform modules
+
+There is a large online library of contributed Terraform modules that could be leveraged to speed the development process. However, we generally prefer to write the Terraform code custom. One never knows how restricted access is to the underlying infrastructure resources until later in the application lifecycle. Decoupling from contributed infrastructure dependencies can be tricky and time consuming.
