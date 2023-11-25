@@ -16,6 +16,11 @@ variable "cpu" {
   type        = number
 }
 
+variable "dns_name" {
+  description = "The public-facing DNS name for the application."
+  type        = string
+}
+
 variable "memory" {
   default     = 512
   description = "The memory resources allocated to the ECS service."
