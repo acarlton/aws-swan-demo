@@ -5,7 +5,7 @@ A demo application featuring deployment and CI/CD for a Hello World application 
 ## Environments
 
 * Production: https://aws-ecs-demo.carlucci.network
-* Development: https://aws-ecs-demo.dev.carlucci.network
+* Development: https://dev.aws-ecs-demo.carlucci.network
 
 Route53 hosted zones are provisioned for each environment and DNS name servers are delegated to from the parent domain.
 
