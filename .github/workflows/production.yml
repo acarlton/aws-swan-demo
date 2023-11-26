@@ -28,6 +28,7 @@ jobs:
       aws_s3_terraform_state_object_key: production.tfstate
       dns_name: aws-ecs-demo.prod.carlucci.network
       environment_name: prod
+      vpc_cidr_index: 0
     secrets:
       aws_assume_role_arn: ${{ secrets.AWS_ASSUME_ROLE_ARN }}
       aws_s3_terraform_state_bucket_name: ${{ secrets.AWS_S3_TERRAFORM_STATE_BUCKET_NAME }}
