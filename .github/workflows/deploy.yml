@@ -13,6 +13,10 @@ on:
         description: The key of the Terraform .tfstate file in AWS S3
         required: true
         type: string
+      dns_name:
+        description: The DNS name to be configured as a Route53 hosted zone
+        required: true
+        type: string
       environment_name:
         description: The name of the environment configured in Github repository settings
         required: true
