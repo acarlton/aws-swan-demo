@@ -62,5 +62,6 @@ jobs:
           terraform apply -auto-approve \
             -var="aws_region=${{ inputs.aws_region }}" \
             -var="aws_replication_region=${{ inputs.aws_replication_region }}" \
+            -var="dns_name=${{ inputs.dns_name }}" \
             -var="environment=${{ inputs.environment_name }}"
         working-directory: ./terraform
