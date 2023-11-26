@@ -1,3 +1,7 @@
+# 0.2.1
+
+* HOTFIX: Fix production dns_name in manifest
+
 # 0.2.0
 
 * SSL traffic encryption terminating at the ALB
