@@ -32,16 +32,14 @@ resource "aws_iam_role_policy_attachment" "legacy_listener_aws_task_execution_ro
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-# Task definition featuring
-#  * CloudWatch logs integration
+# Task definition for Hello World server featuring CloudWatch logs integration
 resource "aws_ecs_task_definition" "hello_world" {
   container_definitions = jsonencode([
     {
-      # TODO: parameterize cpu, or remove this value because it is not required
-      #  for Fargate containers when assigned at the task level and we only have one task
-      cpu = 256
-      # TODO: specify image tag and eventually parameterize
-      image = "nginx"
+      # The same value is used for task and service because there is only one task.
+      cpu = var.cpu
+      # TODO: parameterize image and/or adjust for a customized container image
+      image = "nginxdemos/hello:0.3"
       logConfiguration = {
         logDriver = "awslogs"
         options = {
@@ -50,9 +48,8 @@ resource "aws_ecs_task_definition" "hello_world" {
           "awslogs-stream-prefix" : local.namespace
         }
       },
-      # TODO: parameterize memory, or remove this value because it is not required
-      #  for Fargate containers when assigned at the task level and we only have one task
-      memory      = 512
+      # The same value is used for task and service because there is only one task.
+      memory      = var.memory
       name        = "hello-world"
       networkMode = "FARGATE"
       portMappings = [
@@ -65,12 +62,10 @@ resource "aws_ecs_task_definition" "hello_world" {
     }
   ])
 
-  # TODO: parameterize cpu
-  cpu                = 256
-  execution_role_arn = aws_iam_role.ecs_task_execution.arn
-  family             = "${local.namespace}-hello-world"
-  # TODO: parameterize memory
-  memory                   = 512
+  cpu                      = var.cpu
+  execution_role_arn       = aws_iam_role.ecs_task_execution.arn
+  family                   = "${local.namespace}-hello-world"
+  memory                   = var.memory
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
 }
@@ -111,6 +106,11 @@ resource "aws_ecs_service" "hello_world" {
   desired_count = 1
   launch_type   = "FARGATE"
 
+  # Ignore changes to desired_count when autoscaling is configured
+  lifecycle {
+    ignore_changes = [desired_count]
+  }
+
   # TODO: consider service encrypted internal traffic between
   #  ALB and ECS container on 443 - requires self-signed cert
   load_balancer {
@@ -125,4 +125,47 @@ resource "aws_ecs_service" "hello_world" {
   }
 
   task_definition = aws_ecs_task_definition.hello_world.arn
+}
+
+# Autoscaling
+resource "aws_appautoscaling_target" "hello_world" {
+  max_capacity       = 5
+  min_capacity       = 1
+  resource_id        = "service/${aws_ecs_cluster.cluster.name}/${aws_ecs_service.hello_world.name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+}
+
+resource "aws_appautoscaling_policy" "hello_world_memory" {
+  name               = "${local.namespace}-hello-world-memory"
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.hello_world.resource_id
+  scalable_dimension = aws_appautoscaling_target.hello_world.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.hello_world.service_namespace
+
+  target_tracking_scaling_policy_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ECSServiceAverageMemoryUtilization"
+    }
+
+    # TODO: tune value for a "real" application
+    target_value = 80
+  }
+}
+
+resource "aws_appautoscaling_policy" "hello_world_cpu" {
+  name               = "${local.namespace}-hello-world-cpu"
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.hello_world.resource_id
+  scalable_dimension = aws_appautoscaling_target.hello_world.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.hello_world.service_namespace
+
+  target_tracking_scaling_policy_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ECSServiceAverageCPUUtilization"
+    }
+
+    # TODO: tune value for a "real" application
+    target_value = 60
+  }
 }

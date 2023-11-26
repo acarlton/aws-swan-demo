@@ -13,10 +13,18 @@ on:
         description: The key of the Terraform .tfstate file in AWS S3
         required: true
         type: string
+      dns_name:
+        description: The DNS name to be configured as a Route53 hosted zone
+        required: true
+        type: string
       environment_name:
         description: The name of the environment configured in Github repository settings
         required: true
         type: string
+      vpc_cidr_index:
+        description: The integer of the second segment of the VPC IPv4 CIDR range, to avoid collisions
+        required: true
+        type: number
     secrets:
       aws_assume_role_arn:
         description: The AWS IAM role assumed by Github Actions
@@ -31,16 +39,20 @@ jobs:
     steps:
       - name: Clone the Git repository
         uses: actions/checkout@v3
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4.0.1
         with:
           role-to-assume: ${{ secrets.aws_assume_role_arn }}
           aws-region: ${{ inputs.aws_region }}
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
+
       - name: Terraform Format
         run: terraform fmt -check
         working-directory: ./terraform
+
       - name: Terraform Init
         run: |
           terraform init \
@@ -48,10 +60,13 @@ jobs:
             -backend-config="key=${{ inputs.aws_s3_terraform_state_object_key }}" \
             -backend-config="region=${{ inputs.aws_region }}"
         working-directory: ./terraform
+
       - name: Terraform Apply
         run: |
           terraform apply -auto-approve \
             -var="aws_region=${{ inputs.aws_region }}" \
             -var="aws_replication_region=${{ inputs.aws_replication_region }}" \
-            -var="environment=${{ inputs.environment_name }}"
+            -var="dns_name=${{ inputs.dns_name }}" \
+            -var="environment=${{ inputs.environment_name }}" \
+            -var="vpc_cidr_index=${{ inputs.vpc_cidr_index }}"
         working-directory: ./terraform

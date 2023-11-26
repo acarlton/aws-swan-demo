@@ -10,6 +10,23 @@ variable "aws_replication_region" {
   type        = string
 }
 
+variable "cpu" {
+  default     = 256
+  description = "The CPU resources allocated to the ECS service."
+  type        = number
+}
+
+variable "dns_name" {
+  description = "The public-facing DNS name for the application."
+  type        = string
+}
+
+variable "memory" {
+  default     = 512
+  description = "The memory resources allocated to the ECS service."
+  type        = number
+}
+
 variable "vpc_cidr_index" {
   default     = 0
   description = "The number of the second CIDR IP address segment to act as an index for multiple environment support. The default CIDR range is 10.0.0.0/16, so setting this to 1 would initialize the VPC to a CIDR range of 10.1.0.0/16. This is a negotiated stopgap solution to allow for the provisioning of multiple instances of the application in one region and avoid CIDR collisions."
