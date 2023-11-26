@@ -16,6 +16,8 @@ A demo application featuring deployment and CI/CD for a Hello World application 
 * An application load balancer receiving public traffic and forwarding to ECS in private subnets
 * Definition of a KMS customer managed key for encryption, with support for cross-region replication to enable future multi-region deployments
 * CloudWatch logging with KMS CMK encryption
+* DNS name resolution
+* SSL traffic encryption terminating at the ALB
 
 ## Contributing
 
