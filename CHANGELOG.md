@@ -1,4 +1,4 @@
-# Unreleased
+# 0.2.0
 
 * SSL traffic encryption terminating at the ALB
 * DNS resolution
