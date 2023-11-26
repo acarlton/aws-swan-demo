@@ -26,6 +26,7 @@ jobs:
       aws_region: us-east-1
       aws_replication_region: us-west-2
       aws_s3_terraform_state_object_key: production.tfstate
+      dns_name: aws-ecs-demo.prod.carlucci.network
       environment_name: prod
     secrets:
       aws_assume_role_arn: ${{ secrets.AWS_ASSUME_ROLE_ARN }}
