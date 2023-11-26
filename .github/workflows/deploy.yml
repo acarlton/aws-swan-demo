@@ -21,6 +21,10 @@ on:
         description: The name of the environment configured in Github repository settings
         required: true
         type: string
+      vpc_cidr_index:
+        description: The integer of the second segment of the VPC IPv4 CIDR range, to avoid collisions
+        required: true
+        type: number
     secrets:
       aws_assume_role_arn:
         description: The AWS IAM role assumed by Github Actions
