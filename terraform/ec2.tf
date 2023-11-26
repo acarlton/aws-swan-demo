@@ -17,6 +17,17 @@ resource "aws_security_group_rule" "alb_ingress_http" {
   type              = "ingress"
 }
 
+resource "aws_security_group_rule" "alb_ingress_https" {
+  cidr_blocks       = ["0.0.0.0/0"]
+  description       = "Allow public HTTPS traffic"
+  from_port         = 443
+  ipv6_cidr_blocks  = ["::/0"]
+  protocol          = "tcp"
+  security_group_id = aws_security_group.alb.id
+  to_port           = 443
+  type              = "ingress"
+}
+
 resource "aws_security_group_rule" "alb_egress_all" {
   cidr_blocks       = ["0.0.0.0/0"]
   description       = "Allow all outbound traffic"
@@ -28,6 +39,11 @@ resource "aws_security_group_rule" "alb_egress_all" {
   type              = "egress"
 }
 
+# Currently SSL is terminated at the ALB and traffic is unencrypted
+#  inside the VPC.
+#
+# TODO: adopt "Encryption Everywhere" policy by protecting internal traffic
+#  between the ALB and the application service as well (#15)
 resource "aws_lb_target_group" "alb" {
   name        = local.namespace
   port        = 80
@@ -53,13 +69,30 @@ resource "aws_lb" "alb" {
   subnets            = local.public_subnet_ids
 }
 
+# Redirect HTTP traffic to HTTPS
 resource "aws_lb_listener" "alb" {
+  default_action {
+    redirect {
+      port        = 443
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+    type     = "redirect"
+  }
+
   load_balancer_arn = aws_lb.alb.id
   port              = 80
   protocol          = "HTTP"
+}
 
+resource "aws_lb_listener" "https" {
+  certificate_arn   = aws_acm_certificate.cert.arn
   default_action {
     target_group_arn = aws_lb_target_group.alb.id
     type             = "forward"
   }
+
+  load_balancer_arn = aws_lb.alb.id
+  port              = 443
+  protocol          = "HTTPS"
 }
