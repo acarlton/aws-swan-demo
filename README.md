@@ -2,6 +2,13 @@
 
 A demo application featuring deployment and CI/CD for a Hello World application on AWS ECS Fargate. Infrastructure is defined in Terraform code and deployed automatically.
 
+## Environments
+
+* Production: https://aws-ecs-demo.carlucci.network
+* Development: https://aws-ecs-demo.dev.carlucci.network
+
+Route53 hosted zones are provisioned for each environment and DNS name servers are delegated to from the parent domain.
+
 ## Features
 
 * Repository build process and CI/CD with Github Actions using an OIDC integration with AWS
