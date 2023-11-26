@@ -1,5 +1,7 @@
 # Unreleased
 
+* SSL traffic encryption terminating at the ALB
+* DNS resolution
 * Update README
 * Add ALB DNS name as a Terraform output
 * Parameterize ECS CPU and memory
