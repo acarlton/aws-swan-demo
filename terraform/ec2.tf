@@ -77,7 +77,7 @@ resource "aws_lb_listener" "alb" {
       protocol    = "HTTPS"
       status_code = "HTTP_301"
     }
-    type     = "redirect"
+    type = "redirect"
   }
 
   load_balancer_arn = aws_lb.alb.id
@@ -86,7 +86,7 @@ resource "aws_lb_listener" "alb" {
 }
 
 resource "aws_lb_listener" "https" {
-  certificate_arn   = aws_acm_certificate.cert.arn
+  certificate_arn = aws_acm_certificate.cert.arn
   default_action {
     target_group_arn = aws_lb_target_group.alb.id
     type             = "forward"
