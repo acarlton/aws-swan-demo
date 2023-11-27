@@ -47,10 +47,6 @@ resource "aws_iam_role_policy_attachment" "legacy_listener_aws_task_execution_ro
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-data "external" "git_checkout" {
-  program = ["${path.module}/../git-sha.sh"]
-}
-
 # Task definition for Hello World server featuring CloudWatch logs integration
 resource "aws_ecs_task_definition" "hello_world" {
   # container_definitions = jsonencode([
