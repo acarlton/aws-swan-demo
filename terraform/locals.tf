@@ -5,7 +5,7 @@ locals {
     Application = "aws-swan-demo"
     Environment = var.environment
   }
-  ecs_hello_world_image = "${aws_ecr_repository.hello_world.repository_url}/${var.image_tag}"
+  ecs_hello_world_image = "${aws_ecr_repository.hello_world.repository_url}:${var.image_tag}"
   namespace             = "aws-swan-demo-${var.environment}"
   private_subnet_ids    = [aws_subnet.private_1.id, aws_subnet.private_2.id]
   public_subnet_ids     = [aws_subnet.public_1.id, aws_subnet.public_2.id]
