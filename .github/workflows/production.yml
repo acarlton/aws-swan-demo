@@ -23,6 +23,7 @@ jobs:
     #  So now we're hardcoding the values here and using it as a manifest. Please see
     #  commit 1ec7a0346abc04b73c03e35c0e228e9dba14300c for the previous implementation.
     with:
+      additional_certificate_arns: '[\"arn:aws:acm:us-east-1:510777193308:certificate/9a15e75a-1d74-4349-9ed0-65b0df777a22\"]'
       aws_region: us-east-1
       aws_replication_region: us-west-2
       aws_s3_terraform_state_object_key: production.tfstate
