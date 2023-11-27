@@ -1,3 +1,7 @@
+# 0.3.0
+
+* Additional ACM certificate assignment
+
 # 0.2.1
 
 * HOTFIX: Fix production dns_name in manifest
