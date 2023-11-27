@@ -71,7 +71,7 @@ jobs:
       - name: Terraform Apply
         run: |
           terraform apply -auto-approve \
-            -var="additional_certificate_arns=${{ inputs.aws_region }}" \
+            -var="additional_certificate_arns=${{ inputs.additional_certificate_arns }}" \
             -var="aws_region=${{ inputs.aws_region }}" \
             -var="aws_replication_region=${{ inputs.aws_replication_region }}" \
             -var="dns_name=${{ inputs.dns_name }}" \
