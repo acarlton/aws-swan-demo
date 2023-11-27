@@ -3,7 +3,7 @@ name: Deploy PR 28: Encrypt everywhere
 on:
   push:
     branches:
-      - feature/encrypt-everwhere
+      - feature/encrypt-everwhere--wild-workflow
 
 permissions:
   id-token: write    # This is required for requesting the JWT
