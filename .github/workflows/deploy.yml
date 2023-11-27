@@ -1,6 +1,13 @@
 on:
   workflow_call:
     inputs:
+      additional_certificate_arns:
+        # Arrays are not supported by Github resuable workflow inputs. It might be best to
+        #  move back to defining each environment workflow completely independently.
+        default: "[]"
+        description: "A set of additional ACM certificate ARNs to be assigned to the ALB listener."
+        required: false
+        type: string
       aws_region:
         description: The AWS region target for deployment
         required: true
@@ -64,6 +71,7 @@ jobs:
       - name: Terraform Apply
         run: |
           terraform apply -auto-approve \
+            -var="additional_certificate_arns=${{ inputs.aws_region }}" \
             -var="aws_region=${{ inputs.aws_region }}" \
             -var="aws_replication_region=${{ inputs.aws_replication_region }}" \
             -var="dns_name=${{ inputs.dns_name }}" \

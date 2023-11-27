@@ -96,3 +96,11 @@ resource "aws_lb_listener" "https" {
   port              = 443
   protocol          = "HTTPS"
 }
+
+# Support the assigment of external certificates by ARN
+resource "aws_lb_listener_certificate" "additional" {
+  for_each = var.additional_certificate_arns
+
+  listener_arn    = aws_lb_listener.https.arn
+  certificate_arn = each.value
+}
