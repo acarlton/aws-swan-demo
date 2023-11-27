@@ -46,16 +46,16 @@ resource "aws_security_group_rule" "alb_egress_all" {
 #  between the ALB and the application service as well (#15)
 resource "aws_lb_target_group" "alb" {
   name        = local.namespace
-  port        = 80
-  protocol    = "HTTP"
+  port        = 443
+  protocol    = "HTTPS"
   target_type = "ip"
 
   health_check {
     # TODO: review health check
     enabled  = true
     path     = "/"
-    port     = 80
-    protocol = "HTTP"
+    port     = 443
+    protocol = "HTTPS"
   }
 
   vpc_id = aws_vpc.vpc.id
