@@ -1,3 +1,9 @@
+variable "additional_certificate_arns" {
+  default     = []
+  description = "A set of additional ACM certificate ARNs to be assigned to the ALB listener."
+  type        = set(string)
+}
+
 variable "aws_region" {
   default     = "us-east-1"
   description = "The AWS region name in which the main infrastructure should be deployed."

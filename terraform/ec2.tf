@@ -45,7 +45,8 @@ resource "aws_security_group_rule" "alb_egress_all" {
 # TODO: adopt "Encryption Everywhere" policy by protecting internal traffic
 #  between the ALB and the application service as well (#15)
 resource "aws_lb_target_group" "alb" {
-  name        = local.namespace
+  # name not specified as it creates conflicts when resource needs to be replaced. Depend
+  #  on tags to identify target groups in the console.
   port        = 443
   protocol    = "HTTPS"
   target_type = "ip"
@@ -59,6 +60,11 @@ resource "aws_lb_target_group" "alb" {
   }
 
   vpc_id = aws_vpc.vpc.id
+
+  lifecycle {
+    # For if/when ports change
+    create_before_destroy = true
+  }
 }
 
 resource "aws_lb" "alb" {
@@ -95,4 +101,12 @@ resource "aws_lb_listener" "https" {
   load_balancer_arn = aws_lb.alb.id
   port              = 443
   protocol          = "HTTPS"
+}
+
+# Support the assigment of external certificates by ARN
+resource "aws_lb_listener_certificate" "additional" {
+  for_each = var.additional_certificate_arns
+
+  listener_arn    = aws_lb_listener.https.arn
+  certificate_arn = each.value
 }
