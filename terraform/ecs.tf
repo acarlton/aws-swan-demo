@@ -18,6 +18,16 @@ data "aws_iam_policy_document" "ecs_task_assume_role" {
       identifiers = ["ecs-tasks.amazonaws.com"]
       type        = "Service"
     }
+    condition {
+      test     = "ArnLike"
+      values   = ["arn:aws:ecs:${var.aws_region}:${local.account_id}:*"]
+      variable = "aws:SourceArn"
+    }
+    condition {
+      test     = "StringEquals"
+      values   = [local.account_id]
+      variable = "aws:SourceAccount"
+    }
   }
 }
 
@@ -27,7 +37,7 @@ resource "aws_iam_role" "ecs_task_execution" {
 }
 
 # Use the AWS-provided managed role for basic logging and ECR repository permissions
-resource "aws_iam_role_policy_attachment" "legacy_listener_aws_task_execution_role_policy" {
+resource "aws_iam_role_policy_attachment" "hello_world_aws_task_execution_role_policy" {
   role       = aws_iam_role.ecs_task_execution.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
