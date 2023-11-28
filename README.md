@@ -1,6 +1,6 @@
 # AWS ECS Demo
 
-A demo application featuring deployment and CI/CD for a Hello World application on AWS ECS Fargate. Infrastructure is defined in Terraform code and deployed automatically.
+A demo project featuring deployment and CI/CD for a Hello World application on AWS ECS Fargate. Infrastructure is defined in Terraform code and deployed automatically.
 
 ## Environments
 
